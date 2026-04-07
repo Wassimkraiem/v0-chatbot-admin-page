@@ -46,18 +46,34 @@ export default function ChatPage() {
     setInput('')
     setLoading(true)
 
-    // TODO: Replace with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const apiKey = localStorage.getItem('api_key') || ''
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({ message: input })
+      })
 
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: 'This is a sample response from your chatbot. In production, this will be generated based on your FAQs and vector database.',
-      timestamp: new Date().toLocaleTimeString(),
+      if (response.ok) {
+        const data = await response.json()
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.content || 'No response received from the bot.',
+          timestamp: new Date().toLocaleTimeString(),
+        }
+        setMessages((prev) => [...prev, assistantMessage])
+      } else {
+        console.error('Failed to get chat response')
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+    } finally {
+      setLoading(false)
     }
-
-    setMessages((prev) => [...prev, assistantMessage])
-    setLoading(false)
   }
 
   const handleClearChat = () => {

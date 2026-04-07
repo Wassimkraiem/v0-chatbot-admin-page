@@ -31,35 +31,34 @@ export default function TestPage() {
 
     setLoading(true)
 
-    // TODO: Replace with actual API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const apiKey = localStorage.getItem('api_key') || ''
+      const response = await fetch('/api/test', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({ question })
+      })
 
-    const mockResult: TestResult = {
-      question: question,
-      answer: 'This is a sample answer from the chatbot. It was generated based on the most relevant FAQ entries in the vector database.',
-      sourceChunks: [
-        {
-          id: '1',
-          text: 'What is your pricing? Our pricing starts at $29/month for the basic plan and scales based on your needs.',
-          similarity: 0.95,
-        },
-        {
-          id: '2',
-          text: 'We offer flexible pricing options for different business sizes.',
-          similarity: 0.87,
-        },
-        {
-          id: '3',
-          text: 'Our pricing includes unlimited support and updates.',
-          similarity: 0.82,
-        },
-      ],
-      timestamp: new Date().toLocaleTimeString(),
+      if (response.ok) {
+        const data = await response.json()
+        setResult({
+          question,
+          answer: data.answer,
+          sourceChunks: data.sourceChunks || [],
+          timestamp: new Date().toLocaleTimeString(),
+        })
+        setQuestion('')
+      } else {
+        console.error('Failed to test chatbot')
+      }
+    } catch (error) {
+      console.error('Error testing chatbot:', error)
+    } finally {
+      setLoading(false)
     }
-
-    setResult(mockResult)
-    setQuestion('')
-    setLoading(false)
   }
 
   return (

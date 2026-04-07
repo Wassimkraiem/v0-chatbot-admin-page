@@ -3,20 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { MessageSquare, Plus, TestTube2, MessageCircle, BookOpen } from 'lucide-react'
+import { MessageSquare, TestTube2, MessageCircle, BookOpen, Settings } from 'lucide-react'
 
 const navItems = [
   {
     label: 'FAQs',
     href: '/admin/faqs',
     icon: BookOpen,
-    description: 'View and manage FAQs'
-  },
-  {
-    label: 'Add FAQ',
-    href: '/admin/add-faq',
-    icon: Plus,
-    description: 'Add new FAQ to vector DB'
+    description: 'View, search and manage FAQs'
   },
   {
     label: 'Test Chatbot',
@@ -29,6 +23,12 @@ const navItems = [
     href: '/admin/chat',
     icon: MessageCircle,
     description: 'Converse with chatbot'
+  },
+  {
+    label: 'Settings',
+    href: '/admin/settings',
+    icon: Settings,
+    description: 'API configuration'
   },
 ]
 
